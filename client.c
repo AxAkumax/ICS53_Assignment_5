@@ -1,3 +1,7 @@
+// CMU's csapp.h header file 
+// http://csapp.cs.cmu.edu/2e/ics2/code/include/csapp.h
+
+// sometimes it says addrinfo is an incomplete type and this fixes it...
 #define _POSIX_C_SOURCE 201712L
 #define MAXLINE 8192
 #include <stdio.h>

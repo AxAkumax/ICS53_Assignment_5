@@ -1,3 +1,7 @@
+// CMU's csapp.h header file 
+// http://csapp.cs.cmu.edu/2e/ics2/code/include/csapp.h
+
+// sometimes it says addrinfo is an incomplete type and this fixes it...
 #define _POSIX_C_SOURCE 201712L
 #define MAXLINE 8192
 typedef struct sockaddr SA;
@@ -61,9 +65,11 @@ int open_listenfd(char *port) {
 void echo(int connfd) {
     size_t n;
     char buf[MAXLINE];
+    char greeting[] = "Hello";
     while((n = read(connfd, buf, MAXLINE)) != 0) {
         printf("server received %d bytes\n", (int)n);
-        write(connfd, buf, n);
+        printf("%s\n", buf);
+        write(connfd, greeting, 6);
     }
 }
 

@@ -149,34 +149,40 @@ void echo(int connfd) {
     while((n = read(connfd, buf, MAXLINE)) != 0) {
         //printf("server received %d bytes\n", (int)n);
         //printf("%s\n", buf);
+        printf("SERVER RECIEVED: %s", buf);
+        fflush(stdout);
     
         buf[strcspn(buf, "\n")] = 0;
         token = strtok(buf, " ");
+        
         if (strcmp(token, "quit") == 0){
-            close(connfd);
             return;
         }
-        else if(strcmp(token, "List")){
+        else if(strcmp(token, "List") == 0){
             //we probably shouldn't hardcode this- it's best to split argv but this works for now
             result = "TSLA | MSFT\n";
         }
-        else if(strcmp(token, "Prices")){
+        else if(strcmp(token, "Prices") == 0){
+             
             token = strtok(NULL, " ");
             char* filename;
             char output[20];
-            if (strcmp(token, "MSFT")==0){
+            if (strcmp(token, "MSFT") == 0){
                 token = strtok(NULL, " ");
                 char* date = token;
                 read_price(date, msft_data, output);
             }
-            else if (strcmp(token, "TSLA")==0){
+            else if (strcmp(token, "TSLA") == 0){
                 token = strtok(NULL, " ");
                 char* date = token;
                 read_price(date, tsla_data, output);
             }
-            strcpy(output,result);
+            //WRITE HERE BECAUSE I CANT COPY OUTPUT TO RESULT
+            write(connfd, output, strlen(output) + 1);
+            continue;
         }
-        else if(strcmp(token, "MaxProfit")){
+        else if(strcmp(token, "MaxProfit") == 0){
+            printf("3");
             token = strtok(NULL, " ");
             char* file;
             strcpy(file, token);
@@ -195,9 +201,14 @@ void echo(int connfd) {
             else if(strcmp(file, "TSLA")==0){
                max_profit(start_date, end_date, tsla_data, output);
             }
-            strcpy(output,result);
+            // strcpy(output,result);
+            write(connfd, output, strlen(output) + 1);
+            continue;
+        }else{
+            result = "Server Error\n";
         }
-        write(connfd, result, sizeof(result));
+        
+        write(connfd, result, strlen(result) + 1);
     }
 }
 void initial(){
@@ -211,7 +222,7 @@ int main(int argc, char **argv) {
     struct sockaddr_storage clientaddr; /* Enough room for any addr */
     char client_hostname[MAXLINE], client_port[MAXLINE];
     listenfd = open_listenfd(argv[1]);
-    initial();
+    initial(); //read files
     while (1) {
         clientlen = sizeof(struct sockaddr_storage); /* Important! */
         connfd = accept(listenfd, (SA *)&clientaddr, &clientlen);
@@ -220,6 +231,7 @@ int main(int argc, char **argv) {
         printf("Connected to (%s, %s)\n", client_hostname, client_port);
         echo(connfd);
         close(connfd);
+        break;
     }
     exit(0);
 }

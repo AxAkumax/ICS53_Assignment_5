@@ -18,36 +18,33 @@ int open_clientfd(char *hostname, char *port) {
     struct addrinfo hints, *listp, *p;
 
     memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_socktype = SOCK_STREAM; /* Open a connection */
-    hints.ai_flags = AI_NUMERICSERV; /* …using numeric port arg. */
-    hints.ai_flags |= AI_ADDRCONFIG; /* Recommended for connections */
+    hints.ai_socktype = SOCK_STREAM; // Open a connection 
+    hints.ai_flags = AI_NUMERICSERV; // …using numeric port arg. 
+    hints.ai_flags |= AI_ADDRCONFIG; // Recommended for connections 
     getaddrinfo(hostname, port, &hints, &listp);
 
 
-    /* Walk the list for one that we can successfully connect to */
     for(p = listp; p; p = p->ai_next) {
-        // reminder to self: p is a pointer
-
-        /* Create a socket descriptor*/
+        //try socket
         if((clientfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) < 0) {
-            continue; /* Socket failed, try the next*/ 
+            continue; 
         }
 
-        /* Connect to the server */
+        //server connect
         if (connect(clientfd, p->ai_addr, p->ai_addrlen) != -1) {
-            break; /* Success */
+            break; 
         }
             
-        close(clientfd); /* Connect failed, try another */
+        close(clientfd); //connect failed
     }
 
-    /* Clean up */
+    //clean up
     freeaddrinfo(listp);
     if (!p){
-         /* All connects failed */
+         //all connects failed
          return-1;
     } else {
-        /* The last connect succeeded */
+        //connect success
         return clientfd;
     }
 }
@@ -63,6 +60,9 @@ int main(int argc, char **argv) {
 
     while(fgets(buf, MAXLINE, stdin) != NULL) {
         write(clientfd, buf, strlen(buf));
+        if (strcmp(buf, "quit") == 0){
+            break;
+        }
         read(clientfd, buf, MAXLINE);
         fputs(buf, stdout);
     }

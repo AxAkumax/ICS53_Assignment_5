@@ -147,8 +147,9 @@ void echo(int connfd) {
     char* result;
     char* token;
     while((n = read(connfd, buf, MAXLINE)) != 0) {
-        printf("server received %d bytes\n", (int)n);
-        printf("%s\n", buf);
+        //printf("server received %d bytes\n", (int)n);
+        //printf("%s\n", buf);
+    
         buf[strcspn(buf, "\n")] = 0;
         token = strtok(buf, " ");
         if (strcmp(token, "quit") == 0){

@@ -72,10 +72,12 @@ void read_price(char* date, struct Data* file_data, char* result){
 }
 void max_profit(char* start_date, char* end_date, struct Data* file_data, char* result){
     float max_profit = 0;
+    int found = 0;
     for(int i=0; i<MAX_SIZE; i++){
         if(strcmp(file_data[i].date,start_date)>=0 && strcmp(end_date, file_data[i].date)>=0){
             for(int j=i+1; j<MAX_SIZE; j++){
                 if(strcmp(file_data[j].date,start_date)>=0 && strcmp(end_date, file_data[j].date)>=0){
+                    found = 1;
                     if(file_data[j].price >= file_data[i].price){
                         float final_difference = file_data[j].price - file_data[i].price;
                         if(final_difference>=max_profit){
@@ -88,7 +90,7 @@ void max_profit(char* start_date, char* end_date, struct Data* file_data, char* 
             }
         }
     }
-    if (max_profit <= 0){
+    if (max_profit <= 0 && !found && strcmp(start_date,end_date) != 0){
         sprintf(result, "Unknown\n");
     }else{
         snprintf(result, sizeof(result), "%.2f\n", max_profit);

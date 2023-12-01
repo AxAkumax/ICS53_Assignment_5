@@ -1,9 +1,11 @@
- gcc client.c -o client && ./client localhost 42069
+ gcc client.c -o client && ./client localhost 42123
 
- gcc server.c -o server && ./server 42069
+ gcc server.c -o server && ./server 42123
 
 List
 
 Prices MSFT 2021-11-08
+
+ MaxProfit MSFT 2021-11-04 2021-11-17
 
  MaxProfit MSFT 2021-11-04 2021-11-17

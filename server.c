@@ -68,7 +68,7 @@ void read_price(char* date, struct Data* file_data, char* result){
             return;
         }
     }
-    result = "Date not found\n";
+    sprintf(result, "Unknown\n");
 }
 void max_profit(char* start_date, char* end_date, struct Data* file_data, char* result){
     float max_profit = 0;
@@ -149,10 +149,11 @@ void echo(int connfd) {
     while((n = read(connfd, buf, MAXLINE)) != 0) {
         //printf("server received %d bytes\n", (int)n);
         //printf("%s\n", buf);
-        printf("SERVER RECIEVED: %s", buf);
-        fflush(stdout);
+        // fflush(stdout);
     
         buf[strcspn(buf, "\n")] = 0;
+        printf("%s\n", buf);
+        fflush(stdout);
         token = strtok(buf, " ");
         
         if (strcmp(token, "quit") == 0){
@@ -165,7 +166,7 @@ void echo(int connfd) {
         else if(strcmp(token, "Prices") == 0){
              
             token = strtok(NULL, " ");
-            char* filename;
+            // char* filename;
             char output[20];
             if (strcmp(token, "MSFT") == 0){
                 token = strtok(NULL, " ");
@@ -175,18 +176,20 @@ void echo(int connfd) {
             else if (strcmp(token, "TSLA") == 0){
                 token = strtok(NULL, " ");
                 char* date = token;
-                read_price(date, tsla_data, output);
+                read_price(token, tsla_data, output);
             }
             //WRITE HERE BECAUSE I CANT COPY OUTPUT TO RESULT
-            write(connfd, output, strlen(output) + 1);
+            write(connfd, output, strlen(output)+1);
+            
             continue;
         }
         else if(strcmp(token, "MaxProfit") == 0){
-            printf("3");
             token = strtok(NULL, " ");
-            char* file;
+            char *file;
             strcpy(file, token);
-            char* filename;
+            printf("HERE");
+            fflush(stdout);
+            
             char output[20];
             char* start_date;
             char* end_date;
@@ -202,13 +205,14 @@ void echo(int connfd) {
                max_profit(start_date, end_date, tsla_data, output);
             }
             // strcpy(output,result);
-            write(connfd, output, strlen(output) + 1);
+            write(connfd, output, strlen(output)+1);
             continue;
         }else{
-            result = "Server Error\n";
+            result = "Invalid Syntax\n";
         }
-        
-        write(connfd, result, strlen(result) + 1);
+        // printf("RESULT: %s", result);
+        // fflush(stdout);
+        write(connfd, result, strlen(result)+1);
     }
 }
 void initial(){
@@ -223,6 +227,7 @@ int main(int argc, char **argv) {
     char client_hostname[MAXLINE], client_port[MAXLINE];
     listenfd = open_listenfd(argv[1]);
     initial(); //read files
+    printf("server started\n");
     while (1) {
         clientlen = sizeof(struct sockaddr_storage); /* Important! */
         connfd = accept(listenfd, (SA *)&clientaddr, &clientlen);

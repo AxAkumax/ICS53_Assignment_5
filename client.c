@@ -57,14 +57,16 @@ int main(int argc, char **argv) {
     port = argv[2];
 
     clientfd= open_clientfd(host, port);
-
+    printf("> ");
     while(fgets(buf, MAXLINE, stdin) != NULL) {
         write(clientfd, buf, strlen(buf));
-        if (strcmp(buf, "quit") == 0){
+        if (strcmp(buf, "quit\n") == 0){
             break;
         }
         read(clientfd, buf, MAXLINE);
+        // printf("CLIENT BUF: %s", buf);
         fputs(buf, stdout);
+        printf("> ");
     }
 
     close(clientfd);

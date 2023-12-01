@@ -88,7 +88,11 @@ void max_profit(char* start_date, char* end_date, struct Data* file_data, char* 
             }
         }
     }
-    snprintf(result, sizeof(result), "%.2f\n", max_profit);
+    if (max_profit <= 0){
+        sprintf(result, "Unknown\n");
+    }else{
+        snprintf(result, sizeof(result), "%.2f\n", max_profit);
+    }
 }
 
 //---------------------------------
@@ -234,7 +238,7 @@ int main(int argc, char **argv) {
         connfd = accept(listenfd, (SA *)&clientaddr, &clientlen);
         getnameinfo((SA *) &clientaddr, clientlen,
         client_hostname, MAXLINE, client_port, MAXLINE, 0);
-        printf("Connected to (%s, %s)\n", client_hostname, client_port);
+        // printf("Connected to (%s, %s)\n", client_hostname, client_port);
         echo(connfd);
         close(connfd);
         break;

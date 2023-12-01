@@ -185,14 +185,12 @@ void echo(int connfd) {
         }
         else if(strcmp(token, "MaxProfit") == 0){
             token = strtok(NULL, " ");
-            char *file;
+            char file[20];
             strcpy(file, token);
-            printf("HERE");
-            fflush(stdout);
             
             char output[20];
-            char* start_date;
-            char* end_date;
+            char start_date[20];
+            char end_date[20];
             token = strtok(NULL, " ");
             strcpy(start_date, token);
             token = strtok(NULL, " ");
@@ -225,7 +223,10 @@ int main(int argc, char **argv) {
     socklen_t clientlen;
     struct sockaddr_storage clientaddr; /* Enough room for any addr */
     char client_hostname[MAXLINE], client_port[MAXLINE];
-    listenfd = open_listenfd(argv[1]);
+    char *f1, *f2; //added file stuff DOES NOTHING RN
+    f1 = argv[1];
+    f2 = argv[2];
+    listenfd = open_listenfd(argv[3]);
     initial(); //read files
     printf("server started\n");
     while (1) {
